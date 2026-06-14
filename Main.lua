@@ -2070,20 +2070,167 @@ box:AddToggle("KickNotify", {
 end
 
 do
-local box = Tabs.Main:AddRightGroupbox("Teleport")
+    local box = Tabs.Main:AddRightGroupbox("Teleport")
 
-box:AddLabel("TP To Mouse"):AddKeyPicker("TPTOMOUSE", {
-    Default = "T",
-    Text = "TP To Mouse",
-    Callback = function()
-        if Mouse.Target then
-            HRP.CFrame = Mouse.Hit * CFrame.new(1, 3, 1)
-            stvel(HRP)
+    -- Toggle para ligar/desligar o efeito
+    local EnableEffect = true
+    
+    box:AddToggle("EnableTPEffect", {
+        Text = "Ativar Efeito de Teleporte",
+        Default = true,
+        Callback = function(Value)
+            EnableEffect = Value
         end
-    end
-})
+    })
 
+    box:AddLabel("TP To Mouse"):AddKeyPicker("TPTOMOUSE", {
+        Default = "Z",
+        Text = "Teleport To Mouse",
+        Callback = function()
+            if Mouse.Target then
+                local targetCFrame = Mouse.Hit * CFrame.new(0, 3, 0)
+                
+                -- Só cria o efeito se estiver ativado
+                if EnableEffect then
+                    spawn(function()
+                        createEndermanTeleportEffect(HRP.Position, targetCFrame.Position)
+                    end)
+                end
+                
+                -- Teleporte sempre acontece
+                HRP.CFrame = targetCFrame
+                stvel(HRP)
+            end
+        end
+    })
 end
+
+-- ==================== EFEITO CLIENT-SIDE (SÓ QUEM TEM O SCRIPT VÊ) ====================
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
+
+function createEndermanTeleportEffect(startPos, endPos)
+    local numPearls = 3
+
+    -- Partículas Enderman na saída
+    spawn(function()
+        local startParticle = Instance.new("ParticleEmitter")
+        startParticle.Texture = "rbxassetid://243098098"
+        startParticle.Color = ColorSequence.new(Color3.fromRGB(130, 0, 255), Color3.fromRGB(80, 0, 180))
+        startParticle.Size = NumberSequence.new(0.6, 0.1)
+        startParticle.Lifetime = NumberRange.new(0.7, 1.4)
+        startParticle.Rate = 0
+        startParticle.Speed = NumberRange.new(2, 7)
+        startParticle.SpreadAngle = Vector2.new(60, 60)
+        startParticle.Transparency = NumberSequence.new(0.3, 1)
+        startParticle.Acceleration = Vector3.new(0, 3, 0)
+        
+        local attach = Instance.new("Attachment", workspace.Terrain)
+        attach.Position = startPos
+        startParticle.Parent = attach
+        startParticle:Emit(60)
+        Debris:AddItem(attach, 2)
+    end)
+
+    for i = 1, numPearls do
+        spawn(function()
+            local pearl = Instance.new("Part")
+            pearl.Shape = Enum.PartType.Ball
+            pearl.Size = Vector3.new(0.6, 0.6, 0.6)
+            pearl.Color = Color3.fromRGB(170, 0, 255)
+            pearl.Material = Enum.Material.Neon
+            pearl.Transparency = 0.1
+            pearl.Anchored = true
+            pearl.CanCollide = false
+            pearl.Position = startPos + Vector3.new(math.random(-3,3), math.random(2,5), math.random(-3,3))
+            pearl.Parent = workspace
+
+            local trail = Instance.new("Trail")
+            trail.Color = ColorSequence.new(Color3.fromRGB(255, 80, 255), Color3.fromRGB(160, 0, 255))
+            trail.Transparency = NumberSequence.new(0.2, 1)
+            trail.Lifetime = 0.6
+            trail.WidthScale = NumberSequence.new(0.9, 0)
+            trail.Attachment0 = Instance.new("Attachment", pearl)
+            trail.Attachment1 = Instance.new("Attachment", pearl)
+            trail.Parent = pearl
+
+            local distance = (endPos - pearl.Position).Magnitude
+            local travelTime = math.clamp(distance / 220, 0.2, 0.5)
+
+            local tween = TweenService:Create(pearl, TweenInfo.new(travelTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Position = endPos + Vector3.new(0, 2.5, 0)
+            })
+
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://131057517"
+            sound.Volume = 0.7
+            sound.Parent = pearl
+            sound:Play()
+
+            tween:Play()
+
+            tween.Completed:Connect(function()
+                -- Partículas Enderman na chegada
+                local arrivalParticle = Instance.new("ParticleEmitter")
+                arrivalParticle.Texture = "rbxassetid://243098098"
+                arrivalParticle.Color = ColorSequence.new(Color3.fromRGB(140, 0, 255), Color3.fromRGB(90, 0, 190))
+                arrivalParticle.Size = NumberSequence.new(0.55, 0.1)
+                arrivalParticle.Lifetime = NumberRange.new(0.8, 1.5)
+                arrivalParticle.Rate = 0
+                arrivalParticle.Speed = NumberRange.new(2, 8)
+                arrivalParticle.SpreadAngle = Vector2.new(55, 55)
+                arrivalParticle.Transparency = NumberSequence.new(0.3, 1)
+                arrivalParticle.Acceleration = Vector3.new(0, 2, 0)
+                
+                local attach2 = Instance.new("Attachment", workspace.Terrain)
+                attach2.Position = endPos
+                arrivalParticle.Parent = attach2
+                arrivalParticle:Emit(50)
+                Debris:AddItem(attach2, 2)
+
+                -- Blocos roxos (espalhando pros lados, curta distância)
+                for f = 1, 20 do
+                    spawn(function()
+                        local block = Instance.new("Part")
+                        block.Shape = Enum.PartType.Block
+                        block.Size = Vector3.new(0.32, 0.32, 0.32)
+                        block.Color = Color3.fromRGB(190, 0, 255)
+                        block.Material = Enum.Material.Neon
+                        block.Transparency = 0.15
+                        block.Anchored = false
+                        block.CanCollide = false
+                        block.Position = endPos + Vector3.new(math.random(-2,2), math.random(0.5, 3), math.random(-2,2))
+                        block.Parent = workspace
+
+                        local bv = Instance.new("BodyVelocity")
+                        bv.MaxForce = Vector3.new(4200, 4200, 4200)
+                        bv.Velocity = Vector3.new(math.random(-18,18), math.random(5,13), math.random(-18,18))
+                        bv.Parent = block
+
+                        local bg = Instance.new("BodyAngularVelocity")
+                        bg.AngularVelocity = Vector3.new(math.random(-5,5), math.random(-5,5), math.random(-5,5))
+                        bg.MaxTorque = Vector3.new(600,600,600)
+                        bg.Parent = block
+
+                        Debris:AddItem(block, 1.1)
+                        Debris:AddItem(bv, 0.9)
+                    end)
+                end
+
+                local impact = Instance.new("Sound")
+                impact.SoundId = "rbxassetid://131057517"
+                impact.Volume = 0.85
+                impact.PlaybackSpeed = 0.8
+                impact.Parent = workspace
+                impact:Play()
+                Debris:AddItem(impact, 2)
+
+                Debris:AddItem(pearl, 1)
+            end)
+        end)
+    end
+end
+
 
 do
 local box = Tabs.Target:AddRightGroupbox("Blobman")
@@ -2569,11 +2716,11 @@ do
 
                 if tRoot and blobRoot then
                     -- Bring inicial
-                    for i = 1, 15 do
+                    for i = 1, 20 do
                         if not Toggles.LoopKickBlob.Value then break end
                         blobRoot.CFrame = tRoot.CFrame
                         pcall(function()
-                            if CG and R_Det then 
+                            if CG and R_Weld then 
                                 CG:FireServer(R_Det, tRoot, R_Weld) 
                             end
                             DestroyLine:FireServer(tRoot)
@@ -2584,7 +2731,7 @@ do
                     blobRoot.CFrame = SavedPos
                 end
 
-                local packetTimer = 0
+                local packetTimer = 0,1
                 while Toggles.LoopKickBlob.Value do
                     tChar = target.Character
                     tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
@@ -2592,9 +2739,9 @@ do
 
                     if tRoot and tHum and tHum.Health > 0 and blobRoot then
                         blobRoot.CFrame = SavedPos
-                        tRoot.CFrame = SavedPos * CFrame.new(0, 23, 0)
+                        tRoot.CFrame = SavedPos * CFrame.new(1, 20, 1)
 
-                        if tick() - packetTimer > 0.012 then
+                        if tick() - packetTimer > 0.01 then
                             packetTimer = tick()
                             pcall(function()
                                 tHum.PlatformStand = true
@@ -2929,7 +3076,6 @@ box:AddSlider("BlobDelay", {
 
 end
 
-do
 
 
 do
@@ -3618,7 +3764,7 @@ end
 
 local activepackets = false
 rs.GrabEvents.ExtendGrabLine.OnClientEvent:Connect(function(player, args)
-    if typeof(args) == "string" and string.len(args) > 40000 and not activepackets then
+    if typeof(args) == "string" and string.len(args) > 300 and not activepackets then
         activepackets = true
         local function GetSizeMB(StringLength)
             return StringLength / (1024 * 1024)
