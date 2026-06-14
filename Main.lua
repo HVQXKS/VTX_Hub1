@@ -156,7 +156,18 @@ local function HasProperty(obj, property)
     return ok
 end
 
-admins = loadstring(game:HttpGet("https://raw.githubusercontent.com/Brovaky/Friendly/refs/heads/main/admins"))()
+local admins = {
+    "InthewordSnow1",
+    "CannibalAteU",
+    "NieEbiMozg",
+    "c422_buga",
+    "Dream70p",
+    "1jixn0",
+    "Ha_xye13379",
+    "Treqw_15"
+}
+
+
 
 rs.GrabEvents.ExtendGrabLine.OnClientEvent:Connect(function(...)
     local args = {...}
@@ -2518,7 +2529,7 @@ box:AddToggle("ApplyMethodGrab", {
                         if Method == "Loop Grab(Kick)" then
                             if Sets.Char.Parent ~= workspace then
                                 local pos = HRP.CFrame
-                                local blob = gblob() or inv:FindFirstChild("CreatureBlobman") or spawntoy("CreatureBlobman", HRP.CFrame * CFrame.new(0, 0, 20))
+                                local blob = gblob() or inv:FindFirstChild("CreatureBlobman") or spawntoy("CreatureBlobman", HRP.CFrame * CFrame.new(5, 5, 20))
                                 repeat task.wait() until blob and blob:FindFirstChild("RightDetector") and blob:FindFirstChild("VehicleSeat")
                                 blob.Name = "cringe"
                                 if blob then
@@ -2531,11 +2542,11 @@ box:AddToggle("ApplyMethodGrab", {
                                         CG:FireServer(blob.RightDetector, Sets.HRP, blob.RightDetector.RightWeld)
                                         CD:FireServer(blob.RightDetector.RightWeld)
                                     until isnetworkowner(Sets.HRP)
-                                    task.wait(0.1)
+                                    task.wait(0.2)
                                     Sets.HRP.CFrame = pos * offset
                                     HRP.CFrame = pos
                                     DestroyToy:FireServer(inv:FindFirstChild("cringe"))
-                                    task.wait(0.1)
+                                    task.wait(0.5)
                                 end
                             end
                             if Sets.HRP and hum and HRP then
@@ -2554,11 +2565,11 @@ box:AddToggle("ApplyMethodGrab", {
                                 if (Sets.HRP.Position - HRP.Position).Magnitude >= 29 and Sets.Char.Parent == workspace then
                                     task.wait(0.1)
                                     tp(HRP, Sets.HRP)
-                                    task.wait(0.3)
-                                    sno(Sets.HRP)
                                     task.wait(0.2)
+                                    sno(Sets.HRP)
+                                    task.wait()
                                     HRP.CFrame = pos
-                                    task.wait(0.1)
+                                    task.wait(0.5)
                                     for i,v in pairs(Sets.Char:GetChildren()) do
                                         if v:IsA("Part") and v.Name ~= "Humanoid" then
                                             v.CFrame = pos * offset
@@ -2572,25 +2583,25 @@ box:AddToggle("ApplyMethodGrab", {
                                 end
                                 task.spawn(function()
                                     if Toggles.EnableRagdoll.Value and PalletForRagdoll and inv:FindFirstChild("PalletForRagdoll") then
-                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 2500, 0)
+                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 1000, 0)
                                         PalletForRagdoll.SoundPart.CFrame = Sets.HRP.CFrame
-                                        task.wait(0.1)
-                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(0, 2500, 0)
+                                        task.wait(0.5)
+                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(0, 1000, 0)
                                     end
                                 end)
                                 if not kickbp or kickbp.Parent ~= Sets.HRP then
                                     kickbp = Instance.new("BodyPosition")
                                     kickbp.Parent = Sets.HRP
                                     kickbp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                                    kickbp.D = 999
-                                    kickbp.Position = HRP.Position + Vector3.new(0,20,0)
+                                    kickbp.D = 400
+                                    kickbp.Position = HRP.Position + Vector3.new(0,5,0)
                                 end
                                 if not kickbg or kickbg.Parent ~= Sets.HRP then
                                     kickbg = Instance.new("BodyGyro")
                                     kickbg.Parent = Sets.HRP
                                     kickbg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-                                    kickbp.D = 999999
-                                    kickbg.CFrame = CFrame.new(0, 15, 0)
+                                    kickbp.D = 100
+                                    kickbg.CFrame = CFrame.new(0, 0, 0)
                                 end
                                 task.spawn(function()
                                     for i,v in Sets.Char:GetChildren() do
@@ -2604,20 +2615,20 @@ box:AddToggle("ApplyMethodGrab", {
                             end
                         elseif Method == "Loop Grab" then
                             if Sets.HRP and hum and HRP and Sets.Char.Parent == workspace then
-                                if (Sets.HRP.Position - HRP.Position).Magnitude > 50 then
+                                if (Sets.HRP.Position - HRP.Position).Magnitude > 30 then
                                     stvel(HRP)
                                     HRP.CFrame = Sets.HRP.CFrame * CFrame.new(0,0,5)
                                     task.wait()
                                     repeat task.wait() sno(Sets.HRP) until Sets.Char.Head:FindFirstChild("PartOwner")
                                     HRP.CFrame = pos
-                                    Sets.HRP.CFrame = HRP.CFrame * CFrame.new(0,5,0)
+                                    Sets.HRP.CFrame = HRP.CFrame * CFrame.new(0,15,0)
                                 end
                                 task.spawn(function()
                                     if Toggles.EnableRagdoll.Value and PalletForRagdoll and inv:FindFirstChild("PalletForRagdoll") then
-                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(1, 2500, 0)
+                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 1000, 0)
                                         PalletForRagdoll.SoundPart.CFrame = Sets.HRP.CFrame
-                                        task.wait(0.1)
-                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(1, 2500, 0)
+                                        task.wait(0.05)
+                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(0, 1000, 0)
                                     end
                                 end)
                                 if Sets.Char.Head:FindFirstChild("PartOwner") then
@@ -2635,7 +2646,7 @@ box:AddToggle("ApplyMethodGrab", {
                                     repeat task.wait() blob.VehicleSeat:Sit(hum) until hum.SeatPart == blob.VehicleSeat 
                                     local CG,CD = blob.BlobmanSeatAndOwnerScript.CreatureGrab, blob.BlobmanSeatAndOwnerScript.CreatureRelease
                                     blob.HumanoidRootPart.CFrame = Sets.HRP.CFrame
-                                    task.wait(0.3)
+                                    task.wait(0.2)
                                     repeat
                                         task.wait()
                                         CG:FireServer(blob.RightDetector, Sets.HRP, blob.RightDetector.RightWeld)
@@ -2645,7 +2656,7 @@ box:AddToggle("ApplyMethodGrab", {
                                     Sets.HRP.CFrame = pos * offset
                                     HRP.CFrame = pos
                                     DestroyToy:FireServer(inv:FindFirstChild("cringe"))
-                                    task.wait(0.1)
+                                    task.wait(0.5)
                                 end
                             end
                             if Sets.HRP and hum and HRP and Sets.Char.Parent == workspace and Sets.Char.Humanoid.Health ~= 0 and Sets.Char.Torso:FindFirstChild("Neck") then
@@ -2669,101 +2680,101 @@ box:AddToggle("ApplyMethodGrab", {
         end
     end
 })
--- ==================== LOOP KICK BLOB (Grab + Blobman) ====================
-do
-    box:AddToggle("LoopKickBlob", {
-        Text = "Loop Kick (Grab + Blob)",
-        Default = false,
-        Callback = function(on)
-            if not on then return end
+    -- ==================== LOOP KICK BLOB (Grab + Blobman) ====================
+    do
+        box:AddToggle("LoopKickBlob", {
+            Text = "Loop Kick (Grab + Blob)",
+            Default = false,
+            Callback = function(on)
+                if not on then return end
 
-            local targetName = GrabTarget.Value or BlobmanTarget.Value
-            if not targetName or targetName == "None" then
-                Library:Notify("Selecione um alvo primeiro!", 3)
-                Toggles.LoopKickBlob:SetValue(false)
-                return
-            end
-
-            local target = Players:FindFirstChild(getname(targetName))
-            if not target then
-                Toggles.LoopKickBlob:SetValue(false)
-                return
-            end
-
-            local char = plr.Character
-            local hum = char and char:FindFirstChild("Humanoid")
-            local seat = hum and hum.SeatPart
-
-            if not seat or seat.Parent.Name ~= "CreatureBlobman" then
-                Library:Notify("Sente no Blobman primeiro!", 3)
-                Toggles.LoopKickBlob:SetValue(false)
-                return
-            end
-
-            task.spawn(function()
-                local blob = seat.Parent
-                local blobRoot = blob:FindFirstChild("HumanoidRootPart")
-                local scriptObj = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
-                local CG = scriptObj and scriptObj:FindFirstChild("CreatureGrab")
-                local CD = scriptObj and scriptObj:FindFirstChild("CreatureDrop")
-                local R_Det = blob:FindFirstChild("RightDetector")
-                local R_Weld = R_Det and (R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld"))
-                local SavedPos = blobRoot.CFrame
-
-                local tChar = target.Character
-                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-
-                if tRoot and blobRoot then
-                    -- Bring inicial
-                    for i = 1, 20 do
-                        if not Toggles.LoopKickBlob.Value then break end
-                        blobRoot.CFrame = tRoot.CFrame
-                        pcall(function()
-                            if CG and R_Det then 
-                                CG:FireServer(R_Det, tRoot, R_Weld) 
-                            end
-                            DestroyLine:FireServer(tRoot)
-                            SetNetOwner:FireServer(tRoot, tRoot.CFrame)
-                        end)
-                        task.wait()
-                    end
-                    blobRoot.CFrame = SavedPos
+                local targetName = GrabTarget.Value or BlobmanTarget.Value
+                if not targetName or targetName == "None" then
+                    Library:Notify("Selecione um alvo primeiro!", 3)
+                    Toggles.LoopKickBlob:SetValue(false)
+                    return
                 end
 
-                local packetTimer = 0
-                while Toggles.LoopKickBlob.Value do
-                    tChar = target.Character
-                    tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                    tHum = tChar and tChar:FindFirstChild("Humanoid")
+                local target = Players:FindFirstChild(getname(targetName))
+                if not target then
+                    Toggles.LoopKickBlob:SetValue(false)
+                    return
+                end
 
-                    if tRoot and tHum and tHum.Health > 0 and blobRoot then
-                        blobRoot.CFrame = SavedPos
-                        tRoot.CFrame = SavedPos * CFrame.new(3, 30, 0)
+                local char = plr.Character
+                local hum = char and char:FindFirstChild("Humanoid")
+                local seat = hum and hum.SeatPart
 
-                        if tick() - packetTimer > 0.012 then
-                            packetTimer = tick()
+                if not seat or seat.Parent.Name ~= "CreatureBlobman" then
+                    Library:Notify("Sente no Blobman primeiro!", 3)
+                    Toggles.LoopKickBlob:SetValue(false)
+                    return
+                end
+
+                task.spawn(function()
+                    local blob = seat.Parent
+                    local blobRoot = blob:FindFirstChild("HumanoidRootPart")
+                    local scriptObj = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
+                    local CG = scriptObj and scriptObj:FindFirstChild("CreatureGrab")
+                    local CD = scriptObj and scriptObj:FindFirstChild("CreatureDrop")
+                    local R_Det = blob:FindFirstChild("RightDetector")
+                    local R_Weld = R_Det and (R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld"))
+                    local SavedPos = blobRoot.CFrame
+
+                    local tChar = target.Character
+                    local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+                    local tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+                    if tRoot and blobRoot then
+                        -- Bring inicial
+                        for i = 1, 15 do
+                            if not Toggles.LoopKickBlob.Value then break end
+                            blobRoot.CFrame = tRoot.CFrame
                             pcall(function()
-                                tHum.PlatformStand = true
+                                if CG and R_Det then 
+                                    CG:FireServer(R_Det, tRoot, R_Weld) 
+                                end
                                 DestroyLine:FireServer(tRoot)
                                 SetNetOwner:FireServer(tRoot, tRoot.CFrame)
-                                if R_Det and CD then CD:FireServer(R_Det.RightWeld or R_Det:FindFirstChildWhichIsA("Weld")) end
-                                if R_Det and CG then CG:FireServer(R_Det, tRoot, R_Weld) end
                             end)
+                            task.wait()
                         end
+                        blobRoot.CFrame = SavedPos
                     end
-                    RunService.Heartbeat:Wait()
-                end
 
-                -- Cleanup
-                if blobRoot then 
-                    blobRoot.CFrame = SavedPos 
-                    blobRoot.Velocity = Vector3.zero 
-                end
-            end)
-        end
-    })
-end
+                    local packetTimer = 0
+                    while Toggles.LoopKickBlob.Value do
+                        tChar = target.Character
+                        tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+                        tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+                        if tRoot and tHum and tHum.Health > 0 and blobRoot then
+                            blobRoot.CFrame = SavedPos
+                            tRoot.CFrame = SavedPos * CFrame.new(0, 23, 0)
+
+                            if tick() - packetTimer > 0.012 then
+                                packetTimer = tick()
+                                pcall(function()
+                                    tHum.PlatformStand = true
+                                    DestroyLine:FireServer(tRoot)
+                                    SetNetOwner:FireServer(tRoot, tRoot.CFrame)
+                                    if R_Det and CD then CD:FireServer(R_Det.RightWeld or R_Det:FindFirstChildWhichIsA("Weld")) end
+                                    if R_Det and CG then CG:FireServer(R_Det, tRoot, R_Weld) end
+                                end)
+                            end
+                        end
+                        RunService.Heartbeat:Wait()
+                    end
+
+                    -- Cleanup
+                    if blobRoot then 
+                        blobRoot.CFrame = SavedPos 
+                        blobRoot.Velocity = Vector3.zero 
+                    end
+                end)
+            end
+        })
+    end
 -- ==================== REMOVE ANTI INPUT LAG (Instantâneo por Alvo) ====================
 do
     local box = Tabs.Target:AddRightGroupbox("Anti Input Lag Target")
@@ -3074,60 +3085,7 @@ box:AddSlider("BlobDelay", {
     Rounding = 2,
 })
 
-end
 
-do
-local box = Tabs.Main:AddRightGroupbox("Lags")
-local lps = 100
-local Packets = 3000
-box:AddSlider("LPS", {
-    Text = "Lines Per Second",
-    Default = 100,
-    Min = 1,
-    Max = 10000,
-    Rounding = 0,
-    Callback = function(v)
-        lps = v
-    end
-})
-
-box:AddToggle("LineLag", {
-    Text = "Line Lag",
-    Default = false,
-    Callback = function(v)
-        linelag = v
-        if v then
-            task.spawn(function()
-                while linelag do
-                    for i=1, lps do
-                        CreateLine:FireServer(workspace.SpawnLocation, CFrame.new(0, 9e9, 0))
-                    end
-                    task.wait(1)
-                end
-            end)
-        end
-    end
-})
-
-box:AddSlider("Packets", {
-    Text = "Packet Strength",
-    Default = 18000,
-    Min = 3000,
-    Max = 800000,
-    Rounding = 0,
-    Callback = function(v)
-        Packets = v
-    end
-})
-
-local AntiDetect = false
-box:AddToggle("AntiDetect", {
-    Text = "Anti Detect(Packets)",
-    Default = false,
-    Callback = function(v)
-        AntiDetect = v
-    end
-})
 
 do
 local box = Tabs.Main:AddRightGroupbox("Lags")
@@ -3213,7 +3171,7 @@ box:AddToggle("PacketLag", {
         PacketsEnabled = v
         
         if v then
-            Library:Notify("Packet Lag Ativado", 3)
+            Library:Notify("Packet Lag On", 3)
             task.spawn(function()
                 while PacketsEnabled do
                     -- Auto Stop
@@ -3221,7 +3179,7 @@ box:AddToggle("PacketLag", {
                         local currentPing = GetPing()
                         if currentPing >= MaxPing then
                             PacketsEnabled = false
-                            Library:Notify("🚫 Packet Lag DESATIVADO automaticamente\nPing: " .. math.floor(currentPing), 5)
+                            Library:Notify("Packet Off high ping " .. math.floor(currentPing), 5)
                             break
                         end
                     end
@@ -3242,7 +3200,7 @@ box:AddToggle("PacketLag", {
                 end
             end)
         else
-            Library:Notify("Packet Lag Desativado", 2)
+            Library:Notify("Packet Lag Off", 2)
         end
     end
 })
@@ -3859,7 +3817,7 @@ end
 
 local activepackets = false
 rs.GrabEvents.ExtendGrabLine.OnClientEvent:Connect(function(player, args)
-    if typeof(args) == "string" and string.len(args) > 300 and not activepackets then
+    if typeof(args) == "string" and string.len(args) > 40000 and not activepackets then
         activepackets = true
         local function GetSizeMB(StringLength)
             return StringLength / (1024 * 1024)
