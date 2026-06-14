@@ -3069,7 +3069,7 @@ box:AddToggle("EnableGrabAntiKick", {
     end
 })
 
-end
+
 
 
 do
