@@ -4,7 +4,7 @@ gethui = function()
 end
 
 
-local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
+repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
@@ -156,7 +156,7 @@ local function HasProperty(obj, property)
     return ok
 end
 
-local admins = loadstring(game:HttpGet("https://raw.githubusercontent.com/Brovaky/Friendly/refs/heads/main/admins"))()
+admins = loadstring(game:HttpGet("https://raw.githubusercontent.com/Brovaky/Friendly/refs/heads/main/admins"))()
 
 rs.GrabEvents.ExtendGrabLine.OnClientEvent:Connect(function(...)
     local args = {...}
@@ -1312,14 +1312,22 @@ box:AddButton("Delete Legs", function()
     end
 )
 
-box:AddToggle("AntiLag", {
+
+
+
+local antiLagToggle = box:AddToggle("AntiLag", {
     Text = "Anti Lag",
     Default = false,
     Callback = function(v)
+        AntiLagEnabled = v
         Lines = 0
-        plr.PlayerScripts.CharacterAndBeamMove.Enabled = not v
+        if plr and plr.PlayerScripts:FindFirstChild("CharacterAndBeamMove") then
+            plr.PlayerScripts.CharacterAndBeamMove.Enabled = not v
+        end
     end
 })
+
+
 
 local lagger
 box:AddToggle("AutoAntiLag", {
@@ -2589,7 +2597,7 @@ box:AddToggle("ApplyMethodGrab", {
                                     kickbg = Instance.new("BodyGyro")
                                     kickbg.Parent = Sets.HRP
                                     kickbg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-                                    kickbp.D = 200
+                                    kickbp.D = 100
                                     kickbg.CFrame = CFrame.new(0, 0, 0)
                                 end
                                 task.spawn(function()
@@ -2823,7 +2831,7 @@ do
                     pcall(function()
                         holdPart.HoldItemRemoteFunction:InvokeServer(item, plr.Character)
                     end)
-                    task.wait(0.025)
+                    task.wait(0.05)
                     pcall(function()
                         holdPart.DropItemRemoteFunction:InvokeServer(item, 
                             CFrame.new(0, -3000, 0), Vector3.zero)
@@ -3709,50 +3717,94 @@ end)
 do
 local box = Tabs["Server"]:AddLeftGroupbox("Main")
 
-box:AddButton("Destroy Server(Need Blobman)", function()
-    local blob = hum.SeatPart and hum.SeatPart.Parent and hum.SeatPart.Parent.Name == "CreatureBlobman" and hum.SeatPart.Parent
-    if not blob then return end
-    blob.Name = "blob"
-    local CD,CR,CG = blob.BlobmanSeatAndOwnerScript.CreatureDrop, blob.BlobmanSeatAndOwnerScript.CreatureRelease, blob.BlobmanSeatAndOwnerScript.CreatureGrab
-    local pos = blob.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0)
-    for i,v in game.Players:GetPlayers() do
-        pcall(function()
-            if v ~= plr and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and (not WhitelistEnabled or not v:IsFriendsWith(plr.UserId)) then
-                blob.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
-                task.wait(0.2)
-                CG:FireServer(nil, v.Character.HumanoidRootPart, blob.RightDetector.RightWeld)
-                CR:FireServer(blob.RightDetector.RightWeld)
-            end
-        end)
-        task.wait(0.1)
+do
+local box = Tabs["Server"]:AddLeftGroupbox("Main")
+
+-- ==================== KICK ALL BUTTON ====================
+box:AddButton({
+    Text = "Kick All Players",
+    Func = kickAllPlayers,
+    Tooltip = "Kick todos os jogadores do servidor (exceto whitelist)"
+})
+
+box:AddToggle("WhitelistKick", {
+    Text = "Whitelist (não kickar amigos)",
+    Default = false,
+})
+
+-- Outros toggles/botões que você já tinha podem vir aqui embaixo
+end
+-- ==================== KICK ALL PLAYERS ====================
+local function kickAllPlayers()
+    local char = plr.Character
+    if not char then 
+        Library:Notify({Title = "Kick All", Description = "Character not loaded!", Time = 3})
+        return 
     end
-    blob.HumanoidRootPart.CFrame = pos
-    task.wait(0.1)
-    blob.HumanoidRootPart.Anchored = true
-    local rotation = 0
-    for i,v in game.Players:GetPlayers() do
+
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChild("Humanoid")
+    if not hrp or not hum then return end
+
+    local seat = hum.SeatPart
+    if not seat or seat.Parent.Name ~= "CreatureBlobman" then
+        Library:Notify({Title = "Kick All", Description = "Sente no Blobman primeiro!", Time = 4})
+        return
+    end
+
+    local blob = seat.Parent
+    local detector = blob:FindFirstChild("RightDetector")
+    local scriptBlob = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
+    if not detector or not scriptBlob then return end
+
+    local grab = scriptBlob:FindFirstChild("CreatureGrab")
+    local release = scriptBlob:FindFirstChild("CreatureRelease")
+
+    local whitelist = Toggles.Whitelist and Toggles.Whitelist.Value
+
+    local targets = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= plr and (not whitelist or not plr:IsFriendsWith(p.UserId)) then
+            local tchar = p.Character
+            if tchar and tchar:FindFirstChild("HumanoidRootPart") then
+                table.insert(targets, tchar.HumanoidRootPart)
+            end
+        end
+    end
+
+    if #targets == 0 then
+        Library:Notify({Title = "Kick All", Description = "Nenhum alvo encontrado", Time = 3})
+        return
+    end
+
+    Library:Notify({Title = "Kick All", Description = "Iniciando kick em " .. #targets .. " jogadores...", Time = 3})
+
+    local originalCFrame = hrp.CFrame
+
+    for _, targetRoot in ipairs(targets) do
         pcall(function()
-            if v ~= plr and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.Character.HumanoidRootPart) and (not WhitelistEnabled or not v:IsFriendsWith(plr.UserId)) then
-                local bg = Instance.new("BodyGyro", v.Character.HumanoidRootPart)
-                bg.CFrame = CFrame.new(0, 0, 0)
-                stvel(blob.HumanoidRootPart)
-                stvel(v.Character.HumanoidRootPart)
-                rotation = rotation + 30
-                v.Character.HumanoidRootPart.CFrame = CFrame.new(HRP.Position) * CFrame.Angles(0, math.rad(rotation), 0) * CFrame.new(i, 0, 0)
-                stvel(blob.HumanoidRootPart)
-                task.wait(0.2)
-                sno(v.Character.HumanoidRootPart)
-                DestroyLine:FireServer(v.Character.HumanoidRootPart)
+            hrp.CFrame = targetRoot.CFrame
+            task.wait(0.08)
+            for i = 1, 8 do
+                grab:FireServer(detector, targetRoot, detector:FindFirstChild("RightWeld"))
+                release:FireServer(detector:FindFirstChild("RightWeld"))
                 task.wait()
-                CG:FireServer(nil, v.Character.HumanoidRootPart, blob.RightDetector.RightWeld)
             end
         end)
-        task.wait(0.1)
     end
-    task.wait(0.1)
-    blob.HumanoidRootPart.Anchored = false
-    DestroyToy:FireServer(inv.blob)
-end)
+
+    hrp.CFrame = originalCFrame
+
+    task.spawn(function()
+        task.wait(1)
+        Library:Notify({
+            Title = "Kick All Players",
+            Description = "Kick finalizado em " .. #targets .. " jogadores!",
+            Time = 5
+        })
+    end)
+end
+
 
 -- box:AddToggle("Lobotomy", {
 --     Text = "Lobotomy",
