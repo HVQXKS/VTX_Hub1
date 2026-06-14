@@ -2554,7 +2554,7 @@ box:AddToggle("ApplyMethodGrab", {
                                 if (Sets.HRP.Position - HRP.Position).Magnitude >= 29 and Sets.Char.Parent == workspace then
                                     task.wait(0.1)
                                     tp(HRP, Sets.HRP)
-                                    task.wait(0.4)
+                                    task.wait(0.3)
                                     sno(Sets.HRP)
                                     task.wait(0.2)
                                     HRP.CFrame = pos
@@ -2572,25 +2572,25 @@ box:AddToggle("ApplyMethodGrab", {
                                 end
                                 task.spawn(function()
                                     if Toggles.EnableRagdoll.Value and PalletForRagdoll and inv:FindFirstChild("PalletForRagdoll") then
-                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 3000, 0)
+                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 2500, 0)
                                         PalletForRagdoll.SoundPart.CFrame = Sets.HRP.CFrame
                                         task.wait(0.1)
-                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(0, 3000, 0)
+                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(0, 2500, 0)
                                     end
                                 end)
                                 if not kickbp or kickbp.Parent ~= Sets.HRP then
                                     kickbp = Instance.new("BodyPosition")
                                     kickbp.Parent = Sets.HRP
                                     kickbp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                                    kickbp.D = 200
-                                    kickbp.Position = HRP.Position + Vector3.new(0,15,0)
+                                    kickbp.D = 999
+                                    kickbp.Position = HRP.Position + Vector3.new(0,20,0)
                                 end
                                 if not kickbg or kickbg.Parent ~= Sets.HRP then
                                     kickbg = Instance.new("BodyGyro")
                                     kickbg.Parent = Sets.HRP
                                     kickbg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-                                    kickbp.D = 99999
-                                    kickbg.CFrame = CFrame.new(0, 10, 0)
+                                    kickbp.D = 999999
+                                    kickbg.CFrame = CFrame.new(0, 15, 0)
                                 end
                                 task.spawn(function()
                                     for i,v in Sets.Char:GetChildren() do
@@ -2604,7 +2604,7 @@ box:AddToggle("ApplyMethodGrab", {
                             end
                         elseif Method == "Loop Grab" then
                             if Sets.HRP and hum and HRP and Sets.Char.Parent == workspace then
-                                if (Sets.HRP.Position - HRP.Position).Magnitude > 25 then
+                                if (Sets.HRP.Position - HRP.Position).Magnitude > 50 then
                                     stvel(HRP)
                                     HRP.CFrame = Sets.HRP.CFrame * CFrame.new(0,0,5)
                                     task.wait()
@@ -2614,10 +2614,10 @@ box:AddToggle("ApplyMethodGrab", {
                                 end
                                 task.spawn(function()
                                     if Toggles.EnableRagdoll.Value and PalletForRagdoll and inv:FindFirstChild("PalletForRagdoll") then
-                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(1, 3000, 0)
+                                        PalletForRagdoll.SoundPart.AssemblyLinearVelocity = Vector3.new(1, 2500, 0)
                                         PalletForRagdoll.SoundPart.CFrame = Sets.HRP.CFrame
                                         task.wait(0.1)
-                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(1, 3000, 0)
+                                        PalletForRagdoll.SoundPart.CFrame = HRP.CFrame * CFrame.new(1, 2500, 0)
                                     end
                                 end)
                                 if Sets.Char.Head:FindFirstChild("PartOwner") then
@@ -2641,7 +2641,7 @@ box:AddToggle("ApplyMethodGrab", {
                                         CG:FireServer(blob.RightDetector, Sets.HRP, blob.RightDetector.RightWeld)
                                         CD:FireServer(blob.RightDetector.RightWeld)
                                     until isnetworkowner(Sets.HRP)
-                                    task.wait(0.4)
+                                    task.wait(0.2)
                                     Sets.HRP.CFrame = pos * offset
                                     HRP.CFrame = pos
                                     DestroyToy:FireServer(inv:FindFirstChild("cringe"))
@@ -2737,7 +2737,7 @@ do
                     tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
                     tHum = tChar and tChar:FindFirstChild("Humanoid")
 
-                    if tRoot and tHum and tHum.Health > 5 and blobRoot then
+                    if tRoot and tHum and tHum.Health > 0 and blobRoot then
                         blobRoot.CFrame = SavedPos
                         tRoot.CFrame = SavedPos * CFrame.new(3, 30, 0)
 
@@ -3189,7 +3189,7 @@ box:AddToggle("LineLag", {
 
 box:AddSlider("Packets", {
     Text = "Packet Strength",
-    Default = 800000,
+    Default = 1800000,
     Min = 3000,
     Max = 800000,
     Rounding = 0,
